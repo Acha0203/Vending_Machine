@@ -13,16 +13,16 @@ https://acha0203.github.io/Vending_Machine/
 2. 「Show」をクリックすると入力した番号の画像が左側に表示され、右側に作品タイトル、作者名、画像のサイズが表示されます。
 3. 「Download」をクリックすると、デフォルトのダウンロードフォルダに画像がダウンロードされます。
 
-# Note
- 
+## Note
+
 現在ダウンロードできる画像は28点です。気分次第で増やすかもしれません。
- 
-# Author
+
+## Author
 
 - Acha0203
- 
-# License
- 
+
+## License
+
 BSD 3-Clause License
 
 Copyright (c) 2021, Acha0203
