@@ -1,7 +1,7 @@
 # Images of Animals Vending Machine
 
 ## Description
-コンピュータサイエンス学習プラットフォーム[Recursion](https://recursionist.io)の課題として作成した簡単なブラウザソフトウェアです。さまざまな動物の画像をダウンロードできます。使用した画像はすべてパブリックドメインです。壁紙などにご利用ください。
+コンピュータサイエンス学習プラットフォーム[Recursion](https://recursionist.io)の課題として作成した簡単なWebアプリケーションです。さまざまな動物の画像をダウンロードできます。使用した画像はすべてパブリックドメインです。壁紙などにご利用ください。
 
 ## Pages URL
 
