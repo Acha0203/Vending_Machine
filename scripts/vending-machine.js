@@ -57,72 +57,242 @@ const pictures = [
 	new PictureObject(28, "The Little Rascals", "Henriëtte Ronner-Knip", 2560, 1876, "images/2560px-Henriette-Ronner-Knip-The-Little-Rascals-812015T19523-s.jpg", "images/2560px-Henriette-Ronner-Knip-The-Little-Rascals-812015T19523.jpg")
 ];
 
-// 入力された番号(String)
+// 入力された番号(String)。グローバル変数
 let imageNumber = "0";
 
-// 左側の作成
-let leftSection = 
-`
-<div id="left-box" class="col-12 col-md-6 my-3">
-	<div id="display">
-		<div id="slider-data" class="d-none">
-`;
+class View {
+	static createHtml() {
+		// 左側の作成
+		let leftSection = 
+		`
+		<div id="left-box" class="col-12 col-md-6 my-3">
+			<div id="display">
+				<div id="slider-data" class="d-none">
+		`;
 
-for (let i = 0; i < pictures.length; i++) {
-	leftSection += 
-	`
-	<img src= ${pictures[i].imgUrl1} class="w-100 h-100 slider-item bg-dark">
-	`
+		for (let i = 0; i < pictures.length; i++) {
+			leftSection += 
+			`
+			<img src= ${pictures[i].imgUrl1} class="w-100 h-100 slider-item bg-dark">
+			`
+		}
+
+		leftSection += 
+		`
+				</div>
+			</div>
+		</div>
+		`;
+
+		// 右側の作成
+		let rightSection = 
+		`
+			<div id="right-box" class="col-12 col-md-6 bg-dark">
+				<div id="number-display" class="number-display d-flex justify-content-start align-items-center px-3 my-3">
+					<h2 id="img-number" class="img-number-text font-times">Number: ${imageNumber}</h2>
+				</div>
+				<div id="info-box" class="info-box bd-highlight d-flex justify-content-center align-items-center my-3">
+		`;
+		rightSection += pictures[0].getPictureInfoString(); // デフォルトの値
+		rightSection +=
+		`
+				</div>
+		`;
+		rightSection += View.createTenKeyString();
+		rightSection += 
+		`
+				<button id="btn-download" class="ten-key-btn font-times btn-highlight btn-gradient my-2 w-100">Download</button>
+			</div>
+		`;
+
+		// 画面全体の作成
+		let htmlString = 
+		`
+		<div class="d-flex justify-content-center align-items-center">
+			<h1 class="title-text font-times py-3">Images of Animals Vending Machine</h1>
+		</div>
+		<div id="outer-frame" class="outer-frame">
+			${leftSection}
+			${rightSection}
+		</div>
+		`;
+
+		document.getElementById("target").innerHTML = htmlString;
+		View.getNumbers(0, 9); // 0から9までの数字ボタンにEvent Listenerを登録
+
+	}
+
+	// 数字ボタンを作成
+	static createTenKeyString() {
+		let tenKeyString =
+		`
+		<div id="key-box" class="p-3 my-3 bd-highlight d-flex justify-content-center flex-wrap">
+			<div id="ten-key-top" class="d-flex justify-content-center flex-wrap">
+		`;
+	
+		for (let i = 0; i <= 9; i++) {
+			tenKeyString +=
+			`
+			<button id="btn-${i}" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">${i}</button>
+			`;
+		}
+	
+		tenKeyString +=
+		`
+				<button id="btn-del" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">del</button>
+				<button id="btn-ac" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">AC</button>
+			</div>
+			<div id="ten-key-bottom" class="d-flex justify-content-center align-items-center">
+				<button id="btn-show" class="ten-key-btn font-times btn-highlight btn-gradient m-2 px-5">Show</button>
+			</div>
+		</div>
+		`;
+
+		return tenKeyString;
+	}
+
+	// startからendまでの数字ボタン、del、AC、ShowボタンにEvent Listenerを追加
+	static getNumbers(start, end) {
+		for (let i = start; i <= end; i++) {
+			let buttonId = "btn-" + i.toString();
+			let tenKey = document.getElementById(buttonId);
+
+			tenKey.addEventListener("click", function() {
+				View.changeImageNumber(i);
+			});
+		}
+
+		let otherKey = document.getElementById("btn-del");
+
+		otherKey.addEventListener("click", function() {
+			View.deleteImageNumber();
+		});
+
+		otherKey = document.getElementById("btn-ac");
+
+		otherKey.addEventListener("click", function() {
+			View.clearImageNumber();
+		});
+
+		otherKey = document.getElementById("btn-show");
+	
+		otherKey.addEventListener("click", function() {
+			if (imageNumber === "") imageNumber = "0";
+
+			let currentNumber = parseInt(imageNumber, 10);
+
+			if (Model.checkPicturesList(currentNumber)) {
+				View.drawPictureInfo(currentNumber);
+				Model.slideJump(currentNumber);
+				View.changeImageToDownload(currentNumber);
+			} else {
+				// 入力した数値が範囲外であるというアラートを表示
+				alert("1〜28までの数を入力してください。Please enter a number from 1 to 28.");
+			};
+		});
+	}
+
+	static animateMain(currentElement, nextElement, animationType) {
+		extra.innerHTML = "";
+		extra.append(currentElement);
+
+		main.innerHTML = "";
+		main.append(nextElement);
+
+		main.classList.add("expand-animation");
+		extra.classList.add("deplete-animation");
+
+		if (animationType === "right") {
+			sliderShow.innerHTML = "";
+			sliderShow.append(extra);
+			sliderShow.append(main);
+		} else if (animationType === "left"){
+			sliderShow.innerHTML = "";
+			sliderShow.append(main);
+			sliderShow.append(extra);
+		}
+	}
+
+	// 数値numberを受け取って該当する画像情報を表示
+	static drawPictureInfo(number) {
+		let infoBox = document.getElementById("info-box");
+	
+		infoBox.innerHTML = pictures[number].getPictureInfoString();
+	}
+
+	// 数値numberを受け取って該当する画像をダウンロードできるようにDownloadボタンのHTMLを変更
+	static changeImageToDownload(number) {
+		let imgUrl = pictures[number].imgUrl2;
+		let downloadBtn = document.getElementById("btn-download");
+	
+		downloadBtn.innerHTML = 
+		`
+		<a href="${imgUrl}" download target=”_blank”>Download</a>
+		`;
+	}
+
+	// 数値numberを受け取ってグローバル変数imageNumberに追加し、ナンバーディスプレイに表示
+	static changeImageNumber(number) {
+		imageNumber += number.toString();
+		let imageNumberText = document.getElementById("img-number");
+		imageNumberText.innerHTML = "Number: " + imageNumber;
+	}
+
+	// グローバル変数imageNumberから1文字削除し、ナンバーディスプレイを更新
+	static deleteImageNumber() {
+		imageNumber = imageNumber.substring(0, imageNumber.length - 1);
+		let imageNumberText = document.getElementById("img-number");
+		imageNumberText.innerHTML = "Number: " + imageNumber;
+	}
+
+	// グローバル変数imageNumberの値をすべて削除し、ナンバーディスプレイを更新
+	static clearImageNumber() {
+		imageNumber = "";
+		let imageNumberText = document.getElementById("img-number");
+		imageNumberText.innerHTML = "Number: " + imageNumber;
+	}
 }
 
-leftSection += 
-`
-		</div>
-	</div>
-</div>
-`;
+class Model {
+	// 数値numberを受け取ってアニメーションの方向animationTypeと次の要素nextElementを決定しanimateMain()関数に渡す
+	static slideJump(number) {
+		// 画像の総数の半分の大きさ
+		const halfOfElements = Math.floor(sliderItems.length / 2);
+		let target = number;
+		let index = parseInt(main.getAttribute("data-index"));
+		let currentElement = sliderItems.item(index);
+		let animationType = "none"; // 現在の要素と次の要素が同じなら何もしない
 
-// 右側の作成
-let rightSection = 
-`
-	<div id="right-box" class="col-12 col-md-6 bg-dark">
-		<div id="number-display" class="number-display d-flex justify-content-start align-items-center px-3 my-3">
-			<h2 id="img-number" class="img-number-text font-times">Number: ${imageNumber}</h2>
-		</div>
-		<div id="info-box" class="info-box bd-highlight d-flex justify-content-center align-items-center my-3">
-`;
-rightSection += pictures[0].getPictureInfoString(); // デフォルトの値
-rightSection +=
-`
-		</div>
-`;
-rightSection += createTenKeyString();
-rightSection += 
-`
-		<button id="btn-download" class="ten-key-btn font-times btn-highlight btn-gradient my-2 w-100">Download</button>
-	</div>
-`;
+		// アニメーションの方向を判定
+		if (target > index) {
+			if (target - index <= halfOfElements) animationType = "right";
+			else animationType = "left";
+		} else if (target < index) {
+			if (index - target <= halfOfElements) animationType = "left";
+			else animationType = "right";
+		}
 
-// 画面全体の作成
-let htmlString = 
-`
-<div class="d-flex justify-content-center align-items-center">
-	<h1 class="title-text font-times py-3">Images of Animals Vending Machine</h1>
-</div>
-<div id="outer-frame" class="outer-frame">
-	${leftSection}
-	${rightSection}
-</div>
-`;
+		let nextElement = sliderItems.item(target);
+	
+		main.setAttribute("data-index", target.toString());
 
-document.getElementById("target").innerHTML = htmlString;
-addListenerToTenKey(0, 9); // 0から9までの数字ボタンにEvent Listenerを追加
+		View.animateMain(currentElement, nextElement, animationType);
+	}
 
+	// 数値numberを受け取って該当する画像が登録されているかどうかチェック(true/false)
+	static checkPicturesList(number) {
+		if (number === 0) return false;
+
+		return pictures.length > number;
+	}
+}
+
+View.createHtml();
+
+// Sliderの作成
 const display = document.getElementById("display");
-
 const sliderItems = document.querySelectorAll("#target .slider-item");
 
-// Slider
 let sliderShow = document.createElement("div");
 let main = document.createElement("div");
 let extra = document.createElement("div");
@@ -138,167 +308,3 @@ sliderShow.append(extra);
 display.append(sliderShow);
 
 main.setAttribute("data-index", "0");
-
-// 数値numberを受け取ってアニメーションの方向animationTypeと次の要素nextElementを決定しanimateMain()関数に渡す
-function slideJump(number) {
-	// 画像の総数の半分の大きさ
-	const halfOfElements = Math.floor(sliderItems.length / 2);
-	let target = number;
-	let index = parseInt(main.getAttribute("data-index"));
-	let currentElement = sliderItems.item(index);
-	let animationType = "none"; // 現在の要素と次の要素が同じなら何もしない
-
-	// アニメーションの方向を判定
-	if (target > index) {
-		if (target - index <= halfOfElements) animationType = "right";
-		else animationType = "left";
-	} else if (target < index) {
-		if (index - target <= halfOfElements) animationType = "left";
-		else animationType = "right";
-	}
-
-	let nextElement = sliderItems.item(target);
-
-	main.setAttribute("data-index", target.toString());
-
-	animateMain(currentElement, nextElement, animationType);
-}
-
-function animateMain(currentElement, nextElement, animationType) {
-	extra.innerHTML = "";
-	extra.append(currentElement);
-
-	main.innerHTML = "";
-	main.append(nextElement);
-
-	main.classList.add("expand-animation");
-	extra.classList.add("deplete-animation");
-
-	if (animationType === "right") {
-		sliderShow.innerHTML = "";
-		sliderShow.append(extra);
-		sliderShow.append(main);
-	} else if (animationType === "left"){
-		sliderShow.innerHTML = "";
-		sliderShow.append(main);
-		sliderShow.append(extra);
-	}
-}
-
-// 数字ボタンを作成
-function createTenKeyString() {
-	let tenKeyString =
-	`
-	<div id="key-box" class="p-3 my-3 bd-highlight d-flex justify-content-center flex-wrap">
-		<div id="ten-key-top" class="d-flex justify-content-center flex-wrap">
-	`;
-
-	for (let i = 0; i <= 9; i++) {
-		tenKeyString +=
-		`
-		<button id="btn-${i}" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">${i}</button>
-		`;
-	}
-
-	tenKeyString +=
-	`
-			<button id="btn-del" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">del</button>
-			<button id="btn-ac" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">AC</button>
-		</div>
-		<div id="ten-key-bottom" class="d-flex justify-content-center align-items-center">
-			<button id="btn-show" class="ten-key-btn font-times btn-highlight btn-gradient m-2 px-5">Show</button>
-		</div>
-	</div>
-	`;
-
-	return tenKeyString;
-
-}
-
-// startからendまでの数字ボタン、del、AC、ShowボタンにEvent Listenerを追加
-function addListenerToTenKey(start, end) {
-	for (let i = start; i <= end; i++) {
-		let buttonId = "btn-" + i.toString();
-		let tenKey = document.getElementById(buttonId);
-
-		tenKey.addEventListener("click", function() {
-			changeImageNumber(i);
-		});
-	}
-
-	let otherKey = document.getElementById("btn-del");
-
-	otherKey.addEventListener("click", function() {
-		deleteImageNumber();
-	});
-
-	otherKey = document.getElementById("btn-ac");
-
-	otherKey.addEventListener("click", function() {
-		clearImageNumber();
-	});
-
-	otherKey = document.getElementById("btn-show");
-
-	otherKey.addEventListener("click", function() {
-		if (imageNumber === "") imageNumber = "0";
-
-		let currentNumber = parseInt(imageNumber, 10);
-
-		if (checkPicturesList(currentNumber)) {
-			slideJump(currentNumber);
-			changePictureInfo(currentNumber);
-			changeImageToDownload(currentNumber);
-		} else {
-			// 入力した数値が範囲外であるというアラートを表示
-			alert("1〜28までの数を入力してください。Please enter a number from 1 to 28.");
-		};
-	});
-}
-
-// 数値numberを受け取って該当する画像情報を表示
-function changePictureInfo(number) {
-	let infoBox = document.getElementById("info-box");
-
-	infoBox.innerHTML = pictures[number].getPictureInfoString();
-}
-
-// 数値numberを受け取って該当する画像をダウンロードできるようにDownloadボタンのHTMLを変更
-function changeImageToDownload(number) {
-	let imgUrl = pictures[number].imgUrl2;
-	let downloadBtn = document.getElementById("btn-download");
-
-	downloadBtn.innerHTML = 
-	`
-	<a href="${imgUrl}" download target=”_blank”>Download</a>
-	`;
-}
-
-// 数値numberを受け取ってグローバル変数imageNumberに追加し、ナンバーディスプレイに表示
-function changeImageNumber(number) {
-	imageNumber += number.toString();
-	let imageNumberText = document.getElementById("img-number");
-	imageNumberText.innerHTML = "Number: " + imageNumber;
-}
-
-// グローバル変数imageNumberから1文字削除し、ナンバーディスプレイを更新
-function deleteImageNumber() {
-	imageNumber = imageNumber.substring(0, imageNumber.length - 1);
-	let imageNumberText = document.getElementById("img-number");
-	imageNumberText.innerHTML = "Number: " + imageNumber;
-}
-
-// グローバル変数imageNumberの値をすべて削除し、ナンバーディスプレイを更新
-function clearImageNumber() {
-	imageNumber = "";
-	let imageNumberText = document.getElementById("img-number");
-	imageNumberText.innerHTML = "Number: " + imageNumber;
-}
-
-// 数値numberを受け取って該当する画像が登録されているかどうかチェック(true/false)
-function checkPicturesList(number) {
-	if (number === 0) return false;
-
-	return pictures.length > number;
-}
-
