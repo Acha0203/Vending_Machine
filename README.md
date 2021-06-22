@@ -3,6 +3,8 @@
 ## Description
 コンピュータサイエンス学習プラットフォーム[Recursion](https://recursionist.io)の課題として作成した簡単なWebアプリケーションです。さまざまな動物の画像をダウンロードできます。使用した画像はすべてパブリックドメインです。壁紙などにご利用ください。
 
+This web application was created as a school project in [Recursion](https://recursionist.io). You can download various images of animals with this application. All images I used are in the public domain.
+
 ## Pages URL
 
 https://acha0203.github.io/Vending_Machine/
@@ -13,9 +15,15 @@ https://acha0203.github.io/Vending_Machine/
 2. 「Show」をクリックすると入力した番号の画像が左側に表示され、右側に作品タイトル、作者名、画像のサイズが表示されます。
 3. 「Download」をクリックすると、デフォルトのダウンロードフォルダに画像がダウンロードされます。
 
+1. Click number buttons to enter a numerical value. To delete a character, click [del] button. To delete all characters, click [AC] button.
+2. Clicking [show] button will display an image corresponding with the number on the left of the screen as well as the title of the picture, the name of the artist, and the size of the image on the right of the screen.
+3. Clicking [Download] button will download the image to your default dawnload folder.
+
 ## Note
 
 現在ダウンロードできる画像は28点です。気分次第で増やすかもしれません。
+
+You can download 28 kinds of images at present.
 
 ## Author
 
