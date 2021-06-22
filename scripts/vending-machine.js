@@ -118,8 +118,11 @@ class View {
 		`;
 
 		document.getElementById("target").innerHTML = htmlString;
-		View.getNumbers(0, 9); // 0から9までの数字ボタンにEvent Listenerを登録
+		const sliderItems = document.querySelectorAll("#target .slider-item");
 
+		View.createSlider(sliderItems); // Sliderを作成
+		View.getNumbers(0, 9); // 0から9までの数字ボタンにEvent Listenerを登録
+		View.showPicture(sliderItems); // ShowボタンにEvent Listenerを登録
 	}
 
 	// 数字ボタンを作成
@@ -151,7 +154,7 @@ class View {
 		return tenKeyString;
 	}
 
-	// startからendまでの数字ボタン、del、AC、ShowボタンにEvent Listenerを追加
+	// startからendまでの数字ボタン、del、ACボタンにEvent Listenerを追加
 	static getNumbers(start, end) {
 		for (let i = start; i <= end; i++) {
 			let buttonId = "btn-" + i.toString();
@@ -174,8 +177,12 @@ class View {
 			View.clearImageNumber();
 		});
 
-		otherKey = document.getElementById("btn-show");
-	
+	}
+
+	// ShowボタンにEvent Listenerを追加
+	static showPicture(sliderItems) {
+		let otherKey = document.getElementById("btn-show");
+
 		otherKey.addEventListener("click", function() {
 			if (imageNumber === "") imageNumber = "0";
 
@@ -183,34 +190,13 @@ class View {
 
 			if (Model.checkPicturesList(currentNumber)) {
 				View.drawPictureInfo(currentNumber);
-				Model.slideJump(currentNumber);
+				Model.slideJump(currentNumber, sliderItems);
 				View.changeImageToDownload(currentNumber);
 			} else {
 				// 入力した数値が範囲外であるというアラートを表示
 				alert("1〜28までの数を入力してください。Please enter a number from 1 to 28.");
 			};
 		});
-	}
-
-	static animateMain(currentElement, nextElement, animationType) {
-		extra.innerHTML = "";
-		extra.append(currentElement);
-
-		main.innerHTML = "";
-		main.append(nextElement);
-
-		main.classList.add("expand-animation");
-		extra.classList.add("deplete-animation");
-
-		if (animationType === "right") {
-			sliderShow.innerHTML = "";
-			sliderShow.append(extra);
-			sliderShow.append(main);
-		} else if (animationType === "left"){
-			sliderShow.innerHTML = "";
-			sliderShow.append(main);
-			sliderShow.append(extra);
-		}
 	}
 
 	// 数値numberを受け取って該当する画像情報を表示
@@ -251,32 +237,78 @@ class View {
 		let imageNumberText = document.getElementById("img-number");
 		imageNumberText.innerHTML = "Number: " + imageNumber;
 	}
+
+	static createSlider(sliderItems) {
+		const display = document.getElementById("display");
+
+		const sliderShow = document.createElement("div");
+		const main = document.createElement("div");
+		const extra = document.createElement("div");
+
+		sliderShow.classList.add("w-100", "d-flex", "flex-nowrap", "overflow-hiddens");
+		main.classList.add("main", "full-width");
+		extra.classList.add("extra", "full-width");
+
+		main.append(sliderItems[0]);
+
+		sliderShow.append(main);
+		sliderShow.append(extra);
+		display.append(sliderShow);
+
+		main.setAttribute("id", "slider-main");
+		extra.setAttribute("id", "slider-extra");
+		sliderShow.setAttribute("id", "slider-show");
+
+		main.setAttribute("data-index", "0");
+	}
+
+	static animateMain(currentElement, nextElement, animationType) {
+		let main = document.getElementById("slider-main");
+		let extra = document.getElementById("slider-extra");
+		let sliderShow = document.getElementById("slider-show");
+
+		extra.innerHTML = "";
+		extra.append(currentElement);
+
+		main.innerHTML = "";
+		main.append(nextElement);
+
+		main.classList.add("expand-animation");
+		extra.classList.add("deplete-animation");
+
+		if (animationType === "right") {
+			sliderShow.innerHTML = "";
+			sliderShow.append(extra);
+			sliderShow.append(main);
+		} else if (animationType === "left"){
+			sliderShow.innerHTML = "";
+			sliderShow.append(main);
+			sliderShow.append(extra);
+		}
+	}
 }
 
 class Model {
-	// 数値numberを受け取ってアニメーションの方向animationTypeと次の要素nextElementを決定しanimateMain()関数に渡す
-	static slideJump(number) {
+	// 数値numberを受け取ってアニメーションの方向animationTypeと次の要素を決定しanimateMain()関数に渡す
+	static slideJump(number, sliderItems) {
+		const main = document.getElementById("slider-main");
 		// 画像の総数の半分の大きさ
-		const halfOfElements = Math.floor(sliderItems.length / 2);
-		let target = number;
+		const halfOfElements = Math.floor(pictures.length / 2);
 		let index = parseInt(main.getAttribute("data-index"));
-		let currentElement = sliderItems.item(index);
 		let animationType = "none"; // 現在の要素と次の要素が同じなら何もしない
 
 		// アニメーションの方向を判定
-		if (target > index) {
-			if (target - index <= halfOfElements) animationType = "right";
+		if (number > index) {
+			if (number - index <= halfOfElements) animationType = "right";
 			else animationType = "left";
-		} else if (target < index) {
-			if (index - target <= halfOfElements) animationType = "left";
+		} else if (number < index) {
+			if (index - number <= halfOfElements) animationType = "left";
 			else animationType = "right";
 		}
-
-		let nextElement = sliderItems.item(target);
 	
-		main.setAttribute("data-index", target.toString());
+		main.setAttribute("data-index", number.toString());
 
-		View.animateMain(currentElement, nextElement, animationType);
+		View.animateMain(sliderItems.item(index), sliderItems.item(number), animationType);
 	}
 
 	// 数値numberを受け取って該当する画像が登録されているかどうかチェック(true/false)
@@ -288,23 +320,3 @@ class Model {
 }
 
 View.createHtml();
-
-// Sliderの作成
-const display = document.getElementById("display");
-const sliderItems = document.querySelectorAll("#target .slider-item");
-
-let sliderShow = document.createElement("div");
-let main = document.createElement("div");
-let extra = document.createElement("div");
-
-sliderShow.classList.add("w-100", "d-flex", "flex-nowrap", "overflow-hiddens");
-main.classList.add("main", "full-width");
-extra.classList.add("extra", "full-width");
-
-main.append(sliderItems[0]);
-
-sliderShow.append(main);
-sliderShow.append(extra);
-display.append(sliderShow);
-
-main.setAttribute("data-index", "0");
