@@ -5,7 +5,7 @@
 
 This web application was created as a school project in [Recursion](https://recursionist.io). You can download various images of animals with this application. All images I used are in the public domain.
 
-## Pages URL
+## URL
 
 https://acha0203.github.io/Vending_Machine/
 
@@ -14,6 +14,8 @@ https://acha0203.github.io/Vending_Machine/
 1. 数字ボタンをクリックして数値を入力します。「del」で1文字削除、「AC」で全クリアできます。
 2. 「Show」をクリックすると入力した番号の画像が左側に表示され、右側に作品タイトル、作者名、画像のサイズが表示されます。
 3. 「Download」をクリックすると、デフォルトのダウンロードフォルダに画像がダウンロードされます。
+
+***
 
 1. Click number buttons to enter a numerical value. To delete a character, click [del] button. To delete all characters, click [AC] button.
 2. Clicking [show] button will display an image corresponding with the number on the left of the screen as well as the title of the picture, the name of the artist, and the size of the image on the right of the screen.
