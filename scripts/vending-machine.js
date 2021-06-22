@@ -89,6 +89,7 @@ class View {
 
 		// 右側の作成
 		const rightSectionDiv = document.createElement("div");
+		// ナンバーディスプレイの作成
 		const numberDisplayDiv = document.createElement("div");
 		const imgNumberH2 = document.createElement("h2");
 
@@ -107,6 +108,7 @@ class View {
 
 		imgNumberH2.innerHTML = imgNumberString;
 
+		// 画像情報表示部分の作成
 		const infoBoxDiv = document.createElement("div");
 		infoBoxDiv.classList.add("info-box", "bd-highlight", "d-flex", "justify-content-center", "align-items-center", "my-3");
 		infoBoxDiv.setAttribute("id", "info-box");
@@ -115,14 +117,33 @@ class View {
 		infoBoxDiv.innerHTML = infoBoxString;
 		rightSectionDiv.append(infoBoxDiv);
 
+		// 数字キー部分の作成
 		const tenkeyDiv = document.createElement("div");
-		tenkeyDiv.classList.add("p-3", "my-3", "bd-highlight", "d-flex", "justify-content-center", "flex-wrap");
+		const tenkeyTopDiv = document.createElement("div");
 
-		const tenkeyString = View.createTenKeyString();
-		tenkeyDiv.innerHTML = tenkeyString;
+		tenkeyDiv.classList.add("p-3", "my-3", "bd-highlight", "d-flex", "justify-content-center", "flex-wrap");
+		tenkeyTopDiv.classList.add("d-flex", "justify-content-center", "flex-wrap");
+
+		const tenkeyString = View.getTenKeyString();
+		tenkeyTopDiv.innerHTML = tenkeyString;
+
+		tenkeyDiv.append(tenkeyTopDiv);
+
+		// Showボタンの作成
+		const tenkeyBottomDiv = document.createElement("div");
+		const showBtn = document.createElement("button");
+
+		tenkeyBottomDiv.classList.add("d-flex", "justify-content-center", "align-items-center");
+		showBtn.classList.add("ten-key-btn", "font-times", "btn-highlight", "btn-gradient", "m-2", "px-5");
+		showBtn.setAttribute("id", "btn-show");
+		showBtn.innerHTML = "Show";
+
+		tenkeyBottomDiv.append(showBtn);
+		tenkeyDiv.append(tenkeyBottomDiv);
 
 		rightSectionDiv.append(tenkeyDiv);
 
+		// Downloadボタンの作成
 		const downloadBtn = document.createElement("button");
 		downloadBtn.classList.add("ten-key-btn", "font-times", "btn-highlight", "btn-gradient", "my-2", "w-100");
 		downloadBtn.setAttribute("id", "btn-download");
@@ -158,11 +179,11 @@ class View {
 	}
 
 	// 数字ボタンを作成
-	static createTenKeyString() {
-		let tenKeyString =
-		`
-			<div id="ten-key-top" class="d-flex justify-content-center flex-wrap">
-		`;
+	static getTenKeyString() {
+		let tenKeyString = "";
+		//`
+		//	<div id="ten-key-top" class="d-flex justify-content-center flex-wrap">
+		//`;
 	
 		for (let i = 0; i <= 9; i++) {
 			tenKeyString +=
@@ -173,12 +194,8 @@ class View {
 	
 		tenKeyString +=
 		`
-				<button id="btn-del" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">del</button>
-				<button id="btn-ac" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">AC</button>
-			</div>
-			<div id="ten-key-bottom" class="d-flex justify-content-center align-items-center">
-				<button id="btn-show" class="ten-key-btn font-times btn-highlight btn-gradient m-2 px-5">Show</button>
-			</div>
+			<button id="btn-del" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">del</button>
+			<button id="btn-ac" class="ten-key-btn font-times btn-highlight btn-gradient m-2 w-2em">AC</button>
 		`;
 
 		return tenKeyString;
@@ -349,4 +366,5 @@ class Model {
 	}
 }
 
+// 画面の描画
 View.createHtml();
