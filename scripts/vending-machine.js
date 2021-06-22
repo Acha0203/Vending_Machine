@@ -63,61 +63,93 @@ let imageNumber = "0";
 class View {
 	static createHtml() {
 		// 左側の作成
-		let leftSection = 
-		`
-		<div id="left-box" class="col-12 col-md-6 my-3">
-			<div id="display">
-				<div id="slider-data" class="d-none">
-		`;
+		const leftSectionDiv = document.createElement("div");
+		const display = document.createElement("div");
+		const sliderData = document.createElement("div");
+
+		leftSectionDiv.classList.add("col-12", "col-md-6", "my-3");
+		sliderData.classList.add("d-none");
+
+		display.setAttribute("id", "display");
+		sliderData.setAttribute("id", "slider-data");
+
+		let sliderItemsString = "";
 
 		for (let i = 0; i < pictures.length; i++) {
-			leftSection += 
+			sliderItemsString += 
 			`
 			<img src= ${pictures[i].imgUrl1} class="w-100 h-100 slider-item bg-dark">
 			`
 		}
 
-		leftSection += 
-		`
-				</div>
-			</div>
-		</div>
-		`;
+		sliderData.innerHTML = sliderItemsString;
+
+		display.append(sliderData);
+		leftSectionDiv.append(display);
 
 		// 右側の作成
-		let rightSection = 
+		const rightSectionDiv = document.createElement("div");
+		const numberDisplayDiv = document.createElement("div");
+		const imgNumberH2 = document.createElement("h2");
+
+		rightSectionDiv.classList.add("col-12", "col-md-6", "bg-dark");
+		numberDisplayDiv.classList.add("number-display", "d-flex", "justify-content-start", "align-items-center", "px-3", "my-3");
+		imgNumberH2.classList.add("img-number-text", "font-times");
+		imgNumberH2.setAttribute("id", "img-number");
+
+		numberDisplayDiv.append(imgNumberH2);
+		rightSectionDiv.append(numberDisplayDiv);
+
+		const imgNumberString =
 		`
-			<div id="right-box" class="col-12 col-md-6 bg-dark">
-				<div id="number-display" class="number-display d-flex justify-content-start align-items-center px-3 my-3">
-					<h2 id="img-number" class="img-number-text font-times">Number: ${imageNumber}</h2>
-				</div>
-				<div id="info-box" class="info-box bd-highlight d-flex justify-content-center align-items-center my-3">
+		Number: ${imageNumber}
 		`;
-		rightSection += pictures[0].getPictureInfoString(); // デフォルトの値
-		rightSection +=
-		`
-				</div>
-		`;
-		rightSection += View.createTenKeyString();
-		rightSection += 
-		`
-				<button id="btn-download" class="ten-key-btn font-times btn-highlight btn-gradient my-2 w-100">Download</button>
-			</div>
-		`;
+
+		imgNumberH2.innerHTML = imgNumberString;
+
+		const infoBoxDiv = document.createElement("div");
+		infoBoxDiv.classList.add("info-box", "bd-highlight", "d-flex", "justify-content-center", "align-items-center", "my-3");
+		infoBoxDiv.setAttribute("id", "info-box");
+
+		const infoBoxString = pictures[0].getPictureInfoString(); // デフォルトの値
+		infoBoxDiv.innerHTML = infoBoxString;
+		rightSectionDiv.append(infoBoxDiv);
+
+		const tenkeyDiv = document.createElement("div");
+		tenkeyDiv.classList.add("p-3", "my-3", "bd-highlight", "d-flex", "justify-content-center", "flex-wrap");
+
+		const tenkeyString = View.createTenKeyString();
+		tenkeyDiv.innerHTML = tenkeyString;
+
+		rightSectionDiv.append(tenkeyDiv);
+
+		const downloadBtn = document.createElement("button");
+		downloadBtn.classList.add("ten-key-btn", "font-times", "btn-highlight", "btn-gradient", "my-2", "w-100");
+		downloadBtn.setAttribute("id", "btn-download");
+		downloadBtn.innerHTML = "Download";
+
+		rightSectionDiv.append(downloadBtn);
 
 		// 画面全体の作成
-		let htmlString = 
-		`
-		<div class="d-flex justify-content-center align-items-center">
-			<h1 class="title-text font-times py-3">Images of Animals Vending Machine</h1>
-		</div>
-		<div id="outer-frame" class="outer-frame">
-			${leftSection}
-			${rightSection}
-		</div>
-		`;
+		const targetDiv = document.getElementById("target");
+		const titleDiv = document.createElement("div");
+		const titleH1 = document.createElement("h1");
 
-		document.getElementById("target").innerHTML = htmlString;
+		titleDiv.classList.add("d-flex", "justify-content-center", "align-items-center");
+		titleH1.classList.add("title-text", "font-times", "py-3");
+		titleH1.innerHTML = "Images of Animals Vending Machine";
+
+		titleDiv.append(titleH1);
+		targetDiv.append(titleDiv);
+
+		const outerFrameDiv = document.createElement("div");
+		outerFrameDiv.classList.add("outer-frame");
+
+		outerFrameDiv.append(leftSectionDiv);
+		outerFrameDiv.append(rightSectionDiv);
+
+		targetDiv.append(outerFrameDiv);
+
 		const sliderItems = document.querySelectorAll("#target .slider-item");
 
 		View.createSlider(sliderItems); // Sliderを作成
@@ -129,7 +161,6 @@ class View {
 	static createTenKeyString() {
 		let tenKeyString =
 		`
-		<div id="key-box" class="p-3 my-3 bd-highlight d-flex justify-content-center flex-wrap">
 			<div id="ten-key-top" class="d-flex justify-content-center flex-wrap">
 		`;
 	
@@ -148,7 +179,6 @@ class View {
 			<div id="ten-key-bottom" class="d-flex justify-content-center align-items-center">
 				<button id="btn-show" class="ten-key-btn font-times btn-highlight btn-gradient m-2 px-5">Show</button>
 			</div>
-		</div>
 		`;
 
 		return tenKeyString;
