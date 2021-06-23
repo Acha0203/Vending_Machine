@@ -212,15 +212,15 @@ class View {
 			});
 		}
 
-		let otherKey = document.getElementById("btn-del");
+		tenKey = document.getElementById("btn-del");
 
-		otherKey.addEventListener("click", function() {
+		tenKey.addEventListener("click", function() {
 			View.deleteImageNumber();
 		});
 
-		otherKey = document.getElementById("btn-ac");
+		tenKey = document.getElementById("btn-ac");
 
-		otherKey.addEventListener("click", function() {
+		tenKey.addEventListener("click", function() {
 			View.clearImageNumber();
 		});
 
@@ -266,9 +266,12 @@ class View {
 
 	// 数値numberを受け取ってグローバル変数imageNumberに追加し、ナンバーディスプレイに表示
 	static changeImageNumber(number) {
-		imageNumber += number.toString();
-		let imageNumberText = document.getElementById("img-number");
-		imageNumberText.innerHTML = "Number: " + imageNumber;
+		if (imageNumber.length < 24) {
+			imageNumber += number.toString();
+			let imageNumberText = document.getElementById("img-number");
+			imageNumberText.innerHTML = "Number: " + imageNumber;
+		}
+		
 	}
 
 	// グローバル変数imageNumberから1文字削除し、ナンバーディスプレイを更新
