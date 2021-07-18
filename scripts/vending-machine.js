@@ -203,6 +203,7 @@ class View {
 
 	// startからendまでの数字ボタン、del、ACボタンにEvent Listenerを追加
 	static getNumbers(start, end) {
+		let tenKey = {};
 		for (let i = start; i <= end; i++) {
 			let buttonId = "btn-" + i.toString();
 			let tenKey = document.getElementById(buttonId);
@@ -235,9 +236,9 @@ class View {
 
 			let currentNumber = parseInt(imageNumber, 10);
 
-			if (Model.checkPicturesList(currentNumber)) {
+			if (Controller.checkPicturesList(currentNumber)) {
 				View.drawPictureInfo(currentNumber);
-				Model.slideJump(currentNumber, sliderItems);
+				Controller.slideJump(currentNumber, sliderItems);
 				View.changeImageToDownload(currentNumber);
 			} else {
 				// 入力した数値が範囲外であるというアラートを表示
@@ -338,7 +339,7 @@ class View {
 	}
 }
 
-class Model {
+class Controller {
 	// 数値numberを受け取ってアニメーションの方向animationTypeと次の要素を決定しanimateMain()関数に渡す
 	static slideJump(number, sliderItems) {
 		const main = document.getElementById("slider-main");
