@@ -156,15 +156,15 @@ class View {
 		const titleDiv = document.createElement("div");
 		const titleH1 = document.createElement("h1");
 
-		titleDiv.classList.add("d-flex", "justify-content-center", "align-items-center");
-		titleH1.classList.add("title-text", "font-times", "py-3");
+		titleDiv.classList.add("d-flex", "justify-content-center", "align-items-center", "text-center");
+		titleH1.classList.add("title-text", "font-times", "py-4");
 		titleH1.innerHTML = "Images of Animals Vending Machine";
 
 		titleDiv.append(titleH1);
 		targetDiv.append(titleDiv);
 
 		const outerFrameDiv = document.createElement("div");
-		outerFrameDiv.classList.add("outer-frame");
+		outerFrameDiv.classList.add("outer-frame", "flex-wrap");
 
 		outerFrameDiv.append(leftSectionDiv);
 		outerFrameDiv.append(rightSectionDiv);
@@ -296,9 +296,9 @@ class View {
 		const main = document.createElement("div");
 		const extra = document.createElement("div");
 
-		sliderShow.classList.add("w-100", "d-flex", "flex-nowrap", "overflow-hiddens");
-		main.classList.add("main", "full-width");
-		extra.classList.add("extra", "full-width");
+		sliderShow.classList.add("image-h", "d-flex", "flex-nowrap", "overflow-hiddens");
+		main.classList.add("main");
+		extra.classList.add("extra");
 
 		main.append(sliderItems[0]);
 
