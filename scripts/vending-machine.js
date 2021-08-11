@@ -296,7 +296,7 @@ class View {
 		const main = document.createElement("div");
 		const extra = document.createElement("div");
 
-		sliderShow.classList.add("image-h", "d-flex", "flex-nowrap", "overflow-hiddens");
+		sliderShow.classList.add("image-h", "d-flex", "flex-nowrap", "overflow-hidden");
 		main.classList.add("main");
 		extra.classList.add("extra");
 
